@@ -16,8 +16,8 @@ Server::~Server() {
 }
 
 void Server::StartServer() {
-    QHostAddress channels("127.0.0.1");
-    if (this->listen(channels, PORT)) {
+    QHostAddress localhost("127.0.0.1");
+    if (this->listen(localhost, PORT)) {
         qDebug() << "Listening";
     }
     else {
