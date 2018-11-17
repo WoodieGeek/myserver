@@ -1,0 +1,12 @@
+{
+  {
+    "name": "1 film",
+    "thumbnail": "/somethumbnail_2_film",
+    "comment": "this is title of 2 film"
+  },
+  {
+    "name": "2 film",
+    "thumbnail": "/somethumbnail_2_ film",
+    "comment": "this is title of 2 film"
+  }
+}
