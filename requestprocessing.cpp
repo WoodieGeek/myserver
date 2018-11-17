@@ -77,7 +77,6 @@ void RequestProcessing::run() {
 
     Socket->close();
     Socket->deleteLater();
-
 }
 
 RequestProcessing::~RequestProcessing() {
