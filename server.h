@@ -7,6 +7,8 @@
 #include <QDateTime>
 #include <QFile>
 #include <QThreadPool>
+#include <QSqlDatabase>
+#include <QSqlQuery>
 
 class Server : public QTcpServer
 {
@@ -25,6 +27,7 @@ private:
     QString FilmsData;
     QThreadPool* ThreadPool;
     quint16 PORT = 8001;
+    QSqlDatabase DB;
 };
 
 #endif // SERVER_H

@@ -10,6 +10,10 @@ Server::Server(QObject* parent) : QTcpServer(parent) {
     FilmsData = fileFilms.readAll();
     fileFilms.close();
     ThreadPool = new QThreadPool(this);
+    DB = QSqlDatabase::addDatabase("QSQLITE");
+    //DB.setDatabaseName("/home/woodie/cpp/Qt/laba2_avs/vhost.db");
+    DB.setDatabaseName("vhost.db");
+    if (!DB.open()) qDebug() << "DB dont open";
 }
 
 Server::~Server() {
@@ -23,9 +27,9 @@ void Server::StartServer() {
     else {
         qDebug() << "Server not started";
     }
-}
+    }
 
 void Server::incomingConnection(qintptr socketDescriptor) {
-    RequestProcessing* requestProcessing = new RequestProcessing(socketDescriptor, &FilmsData, &ChannelsData);
+    RequestProcessing* requestProcessing = new RequestProcessing(socketDescriptor, &DB);
     ThreadPool->start(requestProcessing);
 }

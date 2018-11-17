@@ -1,9 +1,8 @@
 #include "requestprocessing.h"
 
-RequestProcessing::RequestProcessing(qintptr socket_id, QString* filmsData, QString* channelsData)
+RequestProcessing::RequestProcessing(qintptr socket_id, QSqlDatabase* db)
     : Socket_id(socket_id)
-    , FilmsData(filmsData)
-    , ChannelsData(channelsData)
+    , DB(db)
 {
     qDebug() << "clinet id = " <<  socket_id;
 }
@@ -20,16 +19,40 @@ QString RequestProcessing::GetUri(const QString& body_http) {
 
 void RequestProcessing::ChannelsHandle() {
     QString responce = "HTTP/1.1 200 OK\r\n\r\n%1";
-    Socket->write(responce.arg(*ChannelsData).toLocal8Bit());
+    QJsonArray channels_array;
+    QSqlQuery* query = new QSqlQuery(*DB);
+    if (query->exec("SELECT * FROM channel")) {
+        while (query->next()) {
+            QJsonObject channel;
+            channel["name"] = query->value(1).toString();
+            channel["description"] = query->value(2).toString();
+            channels_array.append(channel);
+        }
+    }
+    QJsonDocument doc;
+    doc.setArray(channels_array);
+    Socket->write(responce.arg(QString(doc.toJson())).toLocal8Bit());
 }
 
 void RequestProcessing::FilmsHandle() {
     QString responce = "HTTP/1.1 200 OK\r\n\r\n%1";
-    Socket->write(responce.arg(*FilmsData).toLocal8Bit());
+    QJsonArray films_array;
+    QSqlQuery* query = new QSqlQuery(*DB);
+    if (query->exec("SELECT * FROM films")) {
+        while (query->next()) {
+            QJsonObject film;
+            film["title"] = query->value(1).toString();
+            film["description"] = query->value(2).toString();
+            film["thumbnail"] = query->value(3).toString();
+            films_array.append(film);
+        }
+    }
+    QJsonDocument doc;
+    doc.setArray(films_array);
+    Socket->write(responce.arg(QString(doc.toJson())).toLocal8Bit());
 }
 void RequestProcessing::Responce() {
 
-    for ( int i = 0; i < 1e9; i++) {}
     QString uri = GetUri(Socket->readAll());
     qDebug() << "uri = " << uri;
     if (uri == "/channels.json") {

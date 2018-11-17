@@ -1,5 +1,6 @@
 QT -= gui
 QT += network
+QT += sql
 
 CONFIG += c++14 console
 CONFIG -= app_bundle
